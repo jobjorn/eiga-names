@@ -1,0 +1,61 @@
+<?php
+include("core.php");
+
+$active['list'] = 'class="active"';
+
+$page_title = "List";
+
+include("header.php");
+
+
+// echo "<pre>"; print_r($login); echo "</pre>";
+?>
+<div class="container">
+	<div class="col-md-12">
+		<h1>The list</h1>
+<?php
+
+$i = 0;
+$position = 0;
+
+$sql = "SELECT * FROM eiga_grades ORDER BY CASE WHEN position = 0 THEN (SELECT MAX(position) FROM eiga_grades) + 1 ELSE position END";
+$statement = $dbh->prepare($sql);
+$statement->execute();
+$result = $statement->fetchAll(PDO::FETCH_OBJ);
+$i = 0;
+$i2 = 0;
+foreach($result as $movie){
+	$i++;
+	if($i == 1){
+		echo "<table>";
+	}
+	if($movie->position != $position){
+		$i2++;
+		if($i > 1){
+			echo "</td></tr>";
+		}
+		$position = $movie->position;
+		if($movie->position == 0){
+			$show_position = $i2 . "<br /><small>/orankad</small>";
+		}
+		else{
+			$show_position = $i2;
+		}
+		echo "<tr>";
+		echo "<th><h2>" . $show_position . "</h2></th>";
+		echo "<td>";
+	}
+	show_movie($movie->id, "small");
+}
+if($i > 0){
+	echo "</td></tr></table>";
+}
+
+?>
+	</div>
+
+</div>
+
+<?php
+
+include("footer.php");

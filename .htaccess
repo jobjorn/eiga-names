@@ -1,0 +1,15 @@
+RewriteEngine on
+
+RewriteCond %{REQUEST_URI}{QUERY_STRING} !-d
+RewriteRule ^index.php$ - [L]
+RewriteRule ^fetch_tweets.php$ - [L]
+RewriteRule ^favicon.ico$ - [L]
+RewriteRule ^favicon.png$ - [L]
+RewriteRule ^style.css$ - [L]
+RewriteRule ^(css)(/*[^/]*)(/*[^/]*)(/*[^/]*)/?$ - [L]
+RewriteRule ^(js)(/*[^/]*)(/*[^/]*)(/*[^/]*)/?$ - [L]
+RewriteRule ^(fonts)(/*[^/]*)(/*[^/]*)(/*[^/]*)/?$ - [L]
+RewriteRule ^(lib)(/*[^/]*)(/*[^/]*)(/*[^/]*)/?$ - [L]
+RewriteRule ^(tools)(/*[^/]*)(/*[^/]*)(/*[^/]*)/?$ - [L]
+RewriteRule ^(images)(/*[^/]*)(/*[^/]*)(/*[^/]*)/?$ - [L]
+RewriteRule ^([^/]*)(/*[^/]*)(/*[^/]*)(/*[^/]*)(/*[^/]*)(/*[^/]*)/? index.php?module=$1&sub1=$2&sub2=$3&sub3=$4&sub4=$5&sub5=$6 [NC,L,QSA]
