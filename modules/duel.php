@@ -10,17 +10,18 @@ $insert_statement->bindParam(":winner", $sub1);
 $insert_statement->bindParam(":loser", $sub2);
 $insert_statement->execute();
 
+
 $winners = array();
 $i = 0;
 while(true){
 	$i++;
 
 	if($i == 1){
-		$sql = "SELECT DISTINCT winner FROM eiga_duels WHERE winner NOT IN (SELECT loser FROM eiga_duels) ORDER BY winner";
+		$sql = "SELECT DISTINCT id AS winner FROM eiga_grades WHERE id NOT IN (SELECT loser FROM eiga_duels) ORDER BY winner";
 	}
 	else{
 		$list = implode($winners, ", ");
-		$sql = "SELECT DISTINCT winner FROM eiga_duels WHERE winner NOT IN (SELECT loser FROM eiga_duels WHERE winner NOT IN (" . $list . ")) ORDER BY winner";
+		$sql = "SELECT DISTINCT id AS winner FROM eiga_grades WHERE id NOT IN (SELECT loser FROM eiga_duels WHERE winner NOT IN (" . $list . ")) ORDER BY winner";
 	}
 
 	$statement = $dbh->prepare($sql);

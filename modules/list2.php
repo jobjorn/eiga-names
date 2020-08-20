@@ -10,10 +10,10 @@ include("header.php");
 
 // echo "<pre>"; print_r($login); echo "</pre>";
 ?>
-<div class="container">
-	<div class="col-md-12">
-		<h1>The list</h1>
-<?php
+    <div class="container">
+        <div class="col-md-12">
+            <h1>The list</h1>
+            <?php
 
 
 $winners = array();
@@ -26,11 +26,11 @@ while($i < 50){
 	}
 
 	if($i == 1){
-		$sql = "SELECT DISTINCT winner FROM eiga_duels WHERE winner NOT IN (SELECT loser FROM eiga_duels) ORDER BY winner";
+		$sql = "SELECT DISTINCT id AS winner FROM eiga_grades WHERE id NOT IN (SELECT loser FROM eiga_duels) ORDER BY winner";
 	}
 	else{
 		$list = implode($winners, ", ");
-		$sql = "SELECT DISTINCT winner FROM eiga_duels WHERE winner NOT IN (SELECT loser FROM eiga_duels WHERE winner NOT IN (" . $list . ")) ORDER BY winner";
+		$sql = "SELECT DISTINCT id AS winner FROM eiga_grades WHERE id NOT IN (SELECT loser FROM eiga_duels WHERE winner NOT IN (" . $list . ")) ORDER BY winner";
 	}
 
 	$statement = $dbh->prepare($sql);
@@ -60,10 +60,10 @@ if($i > 0){
 	echo "</td></tr></table>";
 }
 ?>
-	</div>
+        </div>
 
-</div>
+    </div>
 
-<?php
+    <?php
 
 include("footer.php");

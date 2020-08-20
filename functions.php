@@ -1,6 +1,6 @@
 <?php
 
-function show_movie($id, $size = "large"){
+function show_movie($id, $size = "large", $duel = false){
 	global $dbh;
 	global $api_key;
 	global $configuration;
@@ -33,14 +33,16 @@ function show_movie($id, $size = "large"){
 		$movie['year'] = substr($response->movie_results[0]->release_date, 0, 4);
 		$movie['poster'] = $response->movie_results[0]->poster_path;
 		$movie['overview'] = $response->movie_results[0]->overview;
+		$movie['vote_average'] = $response->movie_results[0]->vote_average;
 
 
-		$update_sql = "UPDATE eiga_grades SET title = :title, year = :year, poster = :poster, overview = :overview WHERE id = :id";
+		$update_sql = "UPDATE eiga_grades SET title = :title, year = :year, poster = :poster, overview = :overview, vote_average = :vote_average WHERE id = :id";
 		$update_statement = $dbh->prepare($update_sql);
 		$update_statement->bindParam(":title", $movie['title']);
 		$update_statement->bindParam(":year", $movie['year']);
 		$update_statement->bindParam(":poster", $movie['poster']);
 		$update_statement->bindParam(":overview", $movie['overview']);
+		$update_statement->bindParam(":vote_average", $movie['vote_average']);
 		$update_statement->bindParam(":id", $id);
 		$update_statement->execute();
 
