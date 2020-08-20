@@ -15,17 +15,39 @@ include("header.php");
 
 <?php
 
+$position_limits = array();
+$position_limits[1] = 1;
+$position_limits[2] = 1;
+$position_limits[3] = 2;
+$position_limits[4] = 4;
+$position_limits[5] = 5;
+$position_limits[6] = 5;
+$position_limits[7] = 4;
+$position_limits[8] = 2;
+$position_limits[9] = 1;
+$position_limits[10] = 1;
 
-$sql = "SELECT position, COUNT(position) AS count FROM eiga_grades GROUP BY position ORDER BY count DESC, position ASC";
+$position = 0;
+$count = 0;
+
+$sql = "SELECT position, COUNT(position) AS count FROM eiga_grades GROUP BY position ORDER BY position ASC";
 $statement = $dbh->prepare($sql);
 $statement->execute();
+
 $result = $statement->fetchAll(PDO::FETCH_OBJ);
-$position = $result[0]->position;
-$count = $result[0]->count;
+foreach($result as $position_count){
+	if($position_count->count > $position_limits[$position_count->position]){
+		$position = $position_count->position;
+		$count = $position_count->count;
+		break;
+	}
+}
 
 if($count > 1){
 
-	$sql = "SELECT id FROM eiga_grades WHERE position = :position ORDER BY RAND() LIMIT 2";
+	echo $position . "-" . $count . "-" . $position_limits[$position];
+
+	$sql = "SELECT id FROM eiga_grades WHERE position = :position ORDER BY (SELECT COUNT(*) FROM eiga_duels WHERE winner = eiga_grades.id), RAND() LIMIT 2";
 	$statement = $dbh->prepare($sql);
 	$statement->bindParam(":position", $position);
 	$statement->execute();
@@ -38,7 +60,7 @@ if($count > 1){
 			<div class="col-md-6">
 	<?php
 
-	show_movie($movie1);
+	show_movie($movie1, "large", true);
 
 	echo "<a class='btn btn-default' href='" . $root_uri . "/duel/" . $movie1 . "/" . $movie2 . "/'>Den här är bättre</a>";
 	?>
@@ -46,7 +68,7 @@ if($count > 1){
 			<div class="col-md-6">
 	<?php
 
-	show_movie($movie2);
+	show_movie($movie2, "large", true);
 	echo "<a class='btn btn-default' href='" . $root_uri . "/duel/" . $movie2 . "/" . $movie1 . "/'>Den här är bättre</a>";
 	?>
 			</div>
