@@ -15,10 +15,9 @@ include("header.php");
 		<h1>The list</h1>
 <?php
 
-$i = 0;
 $position = 0;
 
-$sql = "SELECT * FROM eiga_grades ORDER BY CASE WHEN position = 0 THEN (SELECT MAX(position) FROM eiga_grades) + 1 ELSE position END";
+$sql = "SELECT * FROM eiga_grades ORDER BY CASE WHEN position = 0 THEN (SELECT MAX(position) FROM eiga_grades) + 1 ELSE position END, id";
 $statement = $dbh->prepare($sql);
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_OBJ);
