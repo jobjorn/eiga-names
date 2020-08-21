@@ -10,7 +10,7 @@ $insert_statement->bindParam(":winner", $sub1);
 $insert_statement->bindParam(":loser", $sub2);
 $insert_statement->execute();
 
-
+/*
 $winners = array();
 $i = 0;
 while(true){
@@ -45,5 +45,6 @@ while(true){
 		break;
 	}
 }
+*/
 
 header("Location: " . $root_uri);

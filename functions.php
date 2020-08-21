@@ -1,5 +1,6 @@
 <?php
 
+/*
 function show_movie($id, $size = "large", $duel = false){
 	global $dbh;
 	global $api_key;
@@ -64,6 +65,7 @@ function show_movie($id, $size = "large", $duel = false){
 		echo "<a href='" . $root_uri . "/movie/" . $id . "/'><img src='" . $configuration->images->base_url . "w92" . $movie['poster'] . "' title='" . htmlentities($movie['title'], ENT_QUOTES) . " (" . $movie['year'] . ")' alt='" . htmlentities($movie['title'], ENT_QUOTES) . " (" . $movie['year'] . ")' /></a>";
 	}
 }
+*/
 
 function get_movie($id){
 	global $dbh;
@@ -89,9 +91,11 @@ function get_movie($id){
 		return $movie;
 	}
 	else{
-		if($result[0]->year == 0){
-			$imdb_id = "tt" . str_pad($id, 7, "0", STR_PAD_LEFT);
-			$api_url = "http://api.themoviedb.org/3/find/" . $imdb_id . "?external_source=imdb_id&api_key=" . $api_key;
+		if($result[0]->tmdb_id == 0){
+			$movie->title = $result[0]->title;
+			$movie->year = $result[0]->year;
+
+			$api_url = "http://api.themoviedb.org/3/search/movie" . "?api_key=" . $api_key . "&year=" . $movie->year . "&query=" . urlencode($movie->title);
 
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $api_url);
@@ -102,22 +106,32 @@ function get_movie($id){
 			curl_close($ch);
 			$response = json_decode($response);
 
-			$movie->title = $response->movie_results[0]->original_title;
-			$movie->year = substr($response->movie_results[0]->release_date, 0, 4);
-			$movie->poster = $response->movie_results[0]->poster_path;
-			$movie->overview = $response->movie_results[0]->overview;
-			$movie->vote_average = $response->movie_results[0]->vote_average;
+			if(count($response->results) > 0){
+				$movie->title = $response->results[0]->original_title;
+				$movie->year = substr($response->results[0]->release_date, 0, 4);
+				$movie->poster = $response->results[0]->poster_path;
+				$movie->overview = $response->results[0]->overview;
+				$movie->vote_average = $response->results[0]->vote_average;
+				$movie->tmdb_id = $response->results[0]->id;
 
 
-			$update_sql = "UPDATE eiga_grades SET title = :title, year = :year, poster = :poster, overview = :overview, vote_average = :vote_average WHERE id = :id";
-			$update_statement = $dbh->prepare($update_sql);
-			$update_statement->bindParam(":title", $movie->title);
-			$update_statement->bindParam(":year", $movie->year);
-			$update_statement->bindParam(":poster", $movie->poster);
-			$update_statement->bindParam(":overview", $movie->overview);
-			$update_statement->bindParam(":vote_average", $movie->vote_average);
-			$update_statement->bindParam(":id", $id);
-			$update_statement->execute();
+				$update_sql = "UPDATE eiga_grades SET title = :title, year = :year, poster = :poster, overview = :overview, vote_average = :vote_average, tmdb_id = :tmdb_id WHERE id = :id";
+				$update_statement = $dbh->prepare($update_sql);
+				$update_statement->bindParam(":title", $movie->title);
+				$update_statement->bindParam(":year", $movie->year);
+				$update_statement->bindParam(":poster", $movie->poster);
+				$update_statement->bindParam(":overview", $movie->overview);
+				$update_statement->bindParam(":vote_average", $movie->vote_average);
+				$update_statement->bindParam(":tmdb_id", $movie->tmdb_id);
+				$update_statement->bindParam(":id", $id);
+				$update_statement->execute();
+			}
+			else{
+				$movie->poster = "";
+				$movie->overview = "(filmen hittades ej)";
+				$movie->vote_average = 0;
+				$movie->tmdb_id = 0;
+			}
 
 		}
 		else{

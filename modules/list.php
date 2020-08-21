@@ -7,6 +7,40 @@ $page_title = "List";
 
 include("header.php");
 
+$winners = array();
+$i = 0;
+while(true){
+	$i++;
+
+	if($i == 1){
+		$sql = "SELECT DISTINCT id AS winner FROM eiga_grades WHERE id NOT IN (SELECT loser FROM eiga_duels) ORDER BY winner";
+	}
+	else{
+		$list = implode($winners, ", ");
+		$sql = "SELECT DISTINCT id AS winner FROM eiga_grades WHERE id NOT IN (SELECT loser FROM eiga_duels WHERE winner NOT IN (" . $list . ")) ORDER BY winner";
+	}
+
+	$statement = $dbh->prepare($sql);
+	$statement->execute();
+	$result = $statement->fetchAll(PDO::FETCH_OBJ);
+
+	$i2 = 0;
+	foreach($result as $winner){
+		if(!in_array($winner->winner, $winners)){
+			$i2++;
+			$winners[] = $winner->winner;
+
+			$update_sql = "UPDATE eiga_grades SET position = :position WHERE id = :id";
+			$update_statement = $dbh->prepare($update_sql);
+			$update_statement->bindParam(":position", $i);
+			$update_statement->bindParam(":id", $winner->winner);
+			$update_statement->execute();
+		}
+	}
+	if($i2 == 0){
+		break;
+	}
+}
 
 // echo "<pre>"; print_r($login); echo "</pre>";
 ?>
@@ -41,7 +75,7 @@ foreach($result as $movie){
 	$movie_details = get_movie($movie->id);
 	//echo "<pre>"; print_r($movie_details); echo "</pre>";
 	//show_movie($movie->id, "small");
-	echo "<a href='" . $movie_details->url . "'><img src='" . $movie_details->poster_small . "' title='" . htmlentities($movie->title, ENT_QUOTES) . " (" . $movie->year . ")' alt='" . htmlentities($movie->title, ENT_QUOTES) . " (" . $movie->year . ")' /></a>";
+	echo "<a href='" . $movie_details->url . "'><img src='" . $movie_details->poster_small . "' title='" . htmlentities($movie_details->title, ENT_QUOTES) . " (" . $movie_details->year . ")' alt='" . htmlentities($movie_details->title, ENT_QUOTES) . " (" . $movie_details->year . ")' /></a>";
 }
 if($i > 0){
 	echo "</td></tr></table>";

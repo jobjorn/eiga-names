@@ -14,10 +14,18 @@ include("header.php");
 <div class="container">
 	<div class="col-md-6">
 		<?php
-show_movie($id);
+		$movie1 = get_movie($id);
+
+		echo "<h2>" . $movie1->title . " <small>(" . $movie1->year . ")</small></h2>";
+		echo "<h4>" . show_grade($movie1->grade) . " / " . $movie1->vote_average . "</h4>";
+
+		echo "<div class='effect2'>";
+		echo "<img src='" . $movie1->poster_large . "' title='" . htmlentities($movie1->title, ENT_QUOTES) . " (" . $movie1->year . ")' alt='" . htmlentities($movie1->title, ENT_QUOTES) . " (" . $movie1->year . ")' />";
+		echo "</div>";
+		echo "<p class='overview'>" . $movie1->overview . "</p>";
 		?>
 	</div>
-	<div class="col-md-6">
+	<div class="col-md-6" id="against">
 		<h3>Won against</h3>
 		<?php
 $sql = "SELECT * FROM eiga_duels WHERE winner = :winner";
@@ -26,8 +34,9 @@ $statement->bindParam(":winner", $id);
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_OBJ);
 
-foreach($result as $movie){
-	show_movie($movie->loser, "small");
+foreach($result as $duel){
+	$movie_details = get_movie($duel->loser);
+	echo "<a href='" . $movie_details->url . "'><img src='" . $movie_details->poster_small . "' title='" . htmlentities($movie_details->title, ENT_QUOTES) . " (" . $movie_details->year . ")' alt='" . htmlentities($movie_details->title, ENT_QUOTES) . " (" . $movie_details->year . ")' /></a>";
 }
 		?>
 
@@ -41,8 +50,9 @@ $statement->bindParam(":loser", $id);
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_OBJ);
 
-foreach($result as $movie){
-	show_movie($movie->winner, "small");
+foreach($result as $duel){
+	$movie_details = get_movie($duel->winner);
+	echo "<a href='" . $movie_details->url . "'><img src='" . $movie_details->poster_small . "' title='" . htmlentities($movie_details->title, ENT_QUOTES) . " (" . $movie_details->year . ")' alt='" . htmlentities($movie_details->title, ENT_QUOTES) . " (" . $movie_details->year . ")' /></a>";
 }
 		?>
 
