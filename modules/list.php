@@ -38,7 +38,10 @@ foreach($result as $movie){
 		echo "<th><h2>" . $position . "</h2></th>";
 		echo "<td>";
 	}
-	show_movie($movie->id, "small");
+	$movie_details = get_movie($movie->id);
+	//echo "<pre>"; print_r($movie_details); echo "</pre>";
+	//show_movie($movie->id, "small");
+	echo "<a href='" . $movie_details->url . "'><img src='" . $movie_details->poster_small . "' title='" . htmlentities($movie->title, ENT_QUOTES) . " (" . $movie->year . ")' alt='" . htmlentities($movie->title, ENT_QUOTES) . " (" . $movie->year . ")' /></a>";
 }
 if($i > 0){
 	echo "</td></tr></table>";

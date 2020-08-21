@@ -14,3 +14,8 @@ body {
 #list img {
 	padding: 0.2em;
 }
+
+p.overview {
+	max-width: 500px;
+	padding-top: 1em;
+}
