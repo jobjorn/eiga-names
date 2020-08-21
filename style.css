@@ -3,3 +3,14 @@ body {
   padding-top: 51px;
   padding-bottom: 20px;
 }
+
+#list {
+	width: 100%;
+}
+#list th {
+	padding: 0 1em;
+	text-align: center;
+}
+#list img {
+	padding: 0.2em;
+}

@@ -26,7 +26,7 @@ $i2 = 0;
 foreach($result as $movie){
 	$i++;
 	if($i == 1){
-		echo "<table>";
+		echo "<table class='table-striped' id='list'>";
 	}
 	if($movie->position != $position){
 		$i2++;
@@ -34,14 +34,8 @@ foreach($result as $movie){
 			echo "</td></tr>";
 		}
 		$position = $movie->position;
-		if($movie->position == 0){
-			$show_position = $i2 . "<br /><small>/orankad</small>";
-		}
-		else{
-			$show_position = $i2;
-		}
 		echo "<tr>";
-		echo "<th><h2>" . $show_position . "</h2></th>";
+		echo "<th><h2>" . $position . "</h2></th>";
 		echo "<td>";
 	}
 	show_movie($movie->id, "small");

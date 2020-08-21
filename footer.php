@@ -3,11 +3,6 @@
 
 			<footer>
 				<p>Jobjörn Folkesson - <a href="https://twitter.com/jobjorn">@jobjorn</a> - <a href="http://www.jobjorn.se/">jobjorn.se</a></p>
-				<p>
-					<?php
-					print_r($_GET);
-					 ?>
-				 </p>
 			</footer>
 		</div> <!-- /container -->
 
