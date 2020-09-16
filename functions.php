@@ -102,18 +102,30 @@ function get_movie($id){
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 			curl_setopt($ch, CURLOPT_HEADER, FALSE);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json"));
-			$response = curl_exec($ch);
+			$api_response = curl_exec($ch);
 			curl_close($ch);
-			$response = json_decode($response);
+			$api_response = json_decode($api_response);
 
-			if(count($response->results) > 0){
-				$movie->title = $response->results[0]->original_title;
-				$movie->year = substr($response->results[0]->release_date, 0, 4);
-				$movie->poster = $response->results[0]->poster_path;
-				$movie->overview = $response->results[0]->overview;
-				$movie->vote_average = $response->results[0]->vote_average;
-				$movie->tmdb_id = $response->results[0]->id;
+			if(count($api_response->results) > 0){
+				$hit = new stdClass();
+				$previous_popularity = 0;
+				foreach($api_response->results as $api_result){
+					if($movie->title == $api_result->title){
+						$hit = $api_result;
+						break;
+					}
+					if($previous_popularity < $api_result->popularity){
+						$hit = $api_result;
+					}
+					$previous_popularity = $api_result->popularity;
+				}
 
+				$movie->title = $hit->original_title;
+				$movie->year = substr($hit->release_date, 0, 4);
+				$movie->poster = $hit->poster_path;
+				$movie->overview = $hit->overview;
+				$movie->vote_average = $hit->vote_average;
+				$movie->tmdb_id = $hit->id;
 
 				$update_sql = "UPDATE eiga_grades SET title = :title, year = :year, poster = :poster, overview = :overview, vote_average = :vote_average, tmdb_id = :tmdb_id WHERE id = :id";
 				$update_statement = $dbh->prepare($update_sql);
