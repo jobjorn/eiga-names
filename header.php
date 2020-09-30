@@ -32,6 +32,21 @@
 
 		<link rel="shortcut icon" href="/favicon.png" />
 
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<meta name="google-signin-client_id" content="<?php echo $google_client_id; ?>">
+		<script type="text/javascript">
+		function onSignIn(googleUser) {
+			let id_token = googleUser.getAuthResponse().id_token;
+			let xhr = new XMLHttpRequest();
+			xhr.open('POST', '<?php echo $root_uri; ?>tokensignin');
+			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			xhr.onload = function() {
+			  console.log('Signed in as: ' + xhr.responseText);
+			};
+			xhr.send('idtoken=' + id_token);
+		}
+		</script>
+
 	</head>
 
 

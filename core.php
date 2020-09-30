@@ -2,6 +2,13 @@
 require_once("connection.php");
 require_once("functions.php");
 
+require_once("libraries/google-api-php-client/vendor/autoload.php");
+
+$client = new Google_Client(['client_id' => $google_client_id]);
+$client->setApplicationName("Eiga Film Sorter (core)");
+$client->setDeveloperKey($google_api_key);
+
+
 // Module and submodule variables
 if(isset($_GET['module'])){
 	$module = trim(str_replace("/", NULL, $_GET['module']));
