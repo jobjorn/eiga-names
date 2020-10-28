@@ -1,6 +1,8 @@
 <?php
 
 
+include("core.php");
+
 $active['home'] = 'class="active"';
 
 
@@ -10,10 +12,13 @@ include("header.php");
 
 ?>
 <div class="container">
+<?php
 
-	<div class="g-signin2" data-onsuccess="onSignIn"></div>
+phpinfo();
 
+?>
 </div>
+
 
 
 <?php

@@ -3,10 +3,11 @@ require_once("connection.php");
 require_once("functions.php");
 
 require_once("libraries/google-api-php-client/vendor/autoload.php");
-
 $client = new Google_Client(['client_id' => $google_client_id]);
 $client->setApplicationName("Eiga Film Sorter (core)");
 $client->setDeveloperKey($google_api_key);
+
+
 
 
 // Module and submodule variables
@@ -52,4 +53,12 @@ try {
 catch(PDOException $e) {
 	echo $e->getMessage();
 	die();
+}
+
+// Cookie handling
+if(isset($_COOKIE['jwt'])){
+	verify_and_refresh_jwt($_COOKIE['jwt']);
+}
+else{
+
 }

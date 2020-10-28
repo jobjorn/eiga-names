@@ -1,5 +1,5 @@
 <?php
-include("core.php");
+require_once("core.php");
 
 if(isset($module)){
 	if(file_exists("modules/" . $module . ".php")){
@@ -12,4 +12,3 @@ if(isset($module)){
 else{
 	include("modules/splash.php");
 }
-

@@ -213,4 +213,76 @@ function tablify_sql($result){
 	}
 }
 
-?>
+function verify_and_refresh_jwt($id_token){
+	global $client;
+	global $dbh;
+
+	$payload = $client->verifyIdToken($id_token);
+
+	if($payload){
+		$google_id = $payload['sub'];
+		$email = $payload['email'];
+		$name = $payload['name'];
+		$picture = $payload['picture'];
+		$sql = "SELECT * FROM eiga_users WHERE google_id = :google_id";
+
+		$statement = $dbh->prepare($sql);
+		$statement->bindParam(":google_id", $google_id);
+		$statement->execute();
+
+		$result = $statement->fetchAll(PDO::FETCH_OBJ);
+
+		if(count($result) == 0){
+			// ingen användare - registrera en
+			$sql = "INSERT INTO eiga_users (google_id, email, name, picture) VALUES (:google_id, :email, :name, :picture)";
+			$statement = $dbh->prepare($sql);
+			$statement->bindParam(":google_id", $google_id);
+			$statement->bindParam(":email", $email);
+			$statement->bindParam(":name", $name);
+			$statement->bindParam(":picture", $picture);
+			$statement->execute();
+		}
+		$options = array("expires" => $payload['exp'], "httponly" => TRUE, "samesite" => "Strict");
+		setcookie("jwt", $id_token, $payload['exp']);
+
+		setcookie("jwt_expiry", $payload['exp'], $payload['exp']);
+
+		return true;
+
+	}
+	// https://github.com/googleapis/google-api-php-client
+
+	/*
+	(
+	[iss] => accounts.google.com
+	[azp] => 240748276416-599kn4hneadk3e9ulick7lor4nnefjs4.apps.googleusercontent.com
+	[aud] => 240748276416-599kn4hneadk3e9ulick7lor4nnefjs4.apps.googleusercontent.com
+	[sub] => 104137162787605911168
+	[email] => jobjorn@gmail.com
+	[email_verified] => 1
+	[at_hash] => 5qo10qeuHgcb7jMfrRabPA
+	[name] => Jobjörn Folkesson
+	[picture] => https://lh3.googleusercontent.com/a-/AOh14GjNMhz4x4TTpNt2Wuuv2kA06vkAYRpxoDGoSHgwew=s96-c
+	[given_name] => Jobjörn
+	[family_name] => Folkesson
+	[locale] => sv
+	[iat] => 1601489086
+	[exp] => 1601492686
+	[jti] => 16c4ea08f31cb2cdc1da8e3cc491084da0b3abaf
+
+	*/
+	// If request specified a G Suite domain:
+	//$domain = $payload['hd'];
+
+
+		/*
+		1. klient trycker på logga in-knappen. vi får en id_token.
+		2. vi verifierar id_token gentemot google och får en payload tillbaka
+		3. vi kollar om id finns i vår databas, om inte, lägger vi in den
+		4. vi sätter en cookie med sluttid sluttiden
+		att göra: refresha cookien på något sätt så att man inte blir utloggad efter en timme.
+
+		*/
+
+
+}
