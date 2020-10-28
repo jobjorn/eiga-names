@@ -5,25 +5,27 @@ require_once("functions.php");
 require_once("libraries/google-api-php-client/vendor/autoload.php");
 $client = new Google_Client(['client_id' => $google_client_id]);
 $client->setApplicationName("Eiga Film Sorter (core)");
+$client->setAccessType("offline");
+$client->setApprovalPrompt("consent");
 $client->setDeveloperKey($google_api_key);
 
 
 
 
 // Module and submodule variables
-if(isset($_GET['module'])){
+if (isset($_GET['module'])) {
 	$module = trim(str_replace("/", NULL, $_GET['module']));
-	if(isset($_GET['sub1'])){
+	if (isset($_GET['sub1'])) {
 		$sub1 = trim(str_replace("/", NULL, $_GET['sub1']));
-		if(isset($_GET['sub2'])){
+		if (isset($_GET['sub2'])) {
 			$sub2 = trim(str_replace("/", NULL, $_GET['sub2']));
-			if(isset($_GET['sub3'])){
+			if (isset($_GET['sub3'])) {
 				$sub3 = trim(str_replace("/", NULL, $_GET['sub3']));
-				if(isset($_GET['sub4'])){
+				if (isset($_GET['sub4'])) {
 					$sub4 = trim(str_replace("/", NULL, $_GET['sub4']));
-					if(isset($_GET['sub5'])){
+					if (isset($_GET['sub5'])) {
 						$sub5 = trim(str_replace("/", NULL, $_GET['sub5']));
-						if(isset($_GET['sub6'])){
+						if (isset($_GET['sub6'])) {
 							$sub6 = trim(str_replace("/", NULL, $_GET['sub6']));
 						}
 					}
@@ -49,16 +51,13 @@ try {
 	$dbh = new PDO("mysql:host=$db_hostname;dbname=$db_name;charset=utf8mb4", $db_user, $db_password);
 	$dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}
-catch(PDOException $e) {
+} catch (PDOException $e) {
 	echo $e->getMessage();
 	die();
 }
 
 // Cookie handling
-if(isset($_COOKIE['jwt'])){
+if (isset($_COOKIE['jwt'])) {
 	verify_and_refresh_jwt($_COOKIE['jwt']);
-}
-else{
-
+} else {
 }

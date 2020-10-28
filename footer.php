@@ -7,7 +7,7 @@
 				<?php
 
 				print_r($_COOKIE);
-
+				print_r(json_decode($_COOKIE['payload']));
 				?>
 			 	</pre>
 				<?php
@@ -21,5 +21,6 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 
-	</body>
-</html>
+		</body>
+
+		</html>

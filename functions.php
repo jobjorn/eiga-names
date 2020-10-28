@@ -67,7 +67,8 @@ function show_movie($id, $size = "large", $duel = false){
 }
 */
 
-function get_movie($id){
+function get_movie($id)
+{
 	global $dbh;
 	global $api_key;
 	global $configuration;
@@ -86,12 +87,11 @@ function get_movie($id){
 	$movie = new stdClass();
 	$movie->id = $id;
 
-	if(count($result) == 0){
+	if (count($result) == 0) {
 		$movie->error = "No result found";
 		return $movie;
-	}
-	else{
-		if($result[0]->tmdb_id == 0){
+	} else {
+		if ($result[0]->tmdb_id == 0) {
 			$movie->title = $result[0]->title;
 			$movie->year = $result[0]->year;
 
@@ -106,15 +106,15 @@ function get_movie($id){
 			curl_close($ch);
 			$api_response = json_decode($api_response);
 
-			if(count($api_response->results) > 0){
+			if (count($api_response->results) > 0) {
 				$hit = new stdClass();
 				$previous_popularity = 0;
-				foreach($api_response->results as $api_result){
-					if($movie->title == $api_result->title){
+				foreach ($api_response->results as $api_result) {
+					if ($movie->title == $api_result->title) {
 						$hit = $api_result;
 						break;
 					}
-					if($previous_popularity < $api_result->popularity){
+					if ($previous_popularity < $api_result->popularity) {
 						$hit = $api_result;
 					}
 					$previous_popularity = $api_result->popularity;
@@ -137,16 +137,13 @@ function get_movie($id){
 				$update_statement->bindParam(":tmdb_id", $movie->tmdb_id);
 				$update_statement->bindParam(":id", $id);
 				$update_statement->execute();
-			}
-			else{
+			} else {
 				$movie->poster = "";
 				$movie->overview = "(filmen hittades ej)";
 				$movie->vote_average = 0;
 				$movie->tmdb_id = 0;
 			}
-
-		}
-		else{
+		} else {
 			$movie->title = $result[0]->title;
 			$movie->year = $result[0]->year;
 			$movie->poster = $result[0]->poster;
@@ -162,24 +159,24 @@ function get_movie($id){
 	}
 }
 
-function show_grade($grade){
+function show_grade($grade)
+{
 	$i = 0;
 	$grade_string = "";
-	while($i < 5){
+	while ($i < 5) {
 		$i++;
-		if($grade >= $i){
+		if ($grade >= $i) {
 			$grade_string .= ' <span class="glyphicon glyphicon-film"></span>';
-		}
-		else{
+		} else {
 			$grade_string .= ' <span class="glyphicon glyphicon-film" style="color: #ddd;"></span>';
 		}
 	}
 
 	return $grade_string;
-
 }
 
-function tablify_sql($result){
+function tablify_sql($result)
+{
 	$i = 0;
 	$rows = "";
 	$headers = "";
@@ -188,13 +185,13 @@ function tablify_sql($result){
 
 
 		$rows .= "<tr>";
-		if($i == 1){
+		if ($i == 1) {
 			$headers .= "<th>#</th>";
 		}
 
 		$rows .= "<td>" . $i . "</td>";
-		foreach($row as $key => $cell){
-			if($i == 1){
+		foreach ($row as $key => $cell) {
+			if ($i == 1) {
 				$headers .= "<th>" . $key . "</th>";
 			}
 			$rows .= "<td>" . $cell . "</td>";
@@ -202,24 +199,24 @@ function tablify_sql($result){
 
 		$rows .= "</tr>";
 	}
-	if($i > 0){
+	if ($i > 0) {
 		$headers = "<tr>" . $headers . "</tr>";
 		$complete_table = "<table class='table table-striped table-condensed table-bordered table-tweets'>" . $headers . $rows . "</table>";
 
 		return $complete_table;
-	}
-	else{
+	} else {
 		return false;
 	}
 }
 
-function verify_and_refresh_jwt($id_token){
+function verify_and_refresh_jwt($id_token)
+{
 	global $client;
 	global $dbh;
 
 	$payload = $client->verifyIdToken($id_token);
 
-	if($payload){
+	if ($payload) {
 		$google_id = $payload['sub'];
 		$email = $payload['email'];
 		$name = $payload['name'];
@@ -232,7 +229,7 @@ function verify_and_refresh_jwt($id_token){
 
 		$result = $statement->fetchAll(PDO::FETCH_OBJ);
 
-		if(count($result) == 0){
+		if (count($result) == 0) {
 			// ingen användare - registrera en
 			$sql = "INSERT INTO eiga_users (google_id, email, name, picture) VALUES (:google_id, :email, :name, :picture)";
 			$statement = $dbh->prepare($sql);
@@ -244,19 +241,19 @@ function verify_and_refresh_jwt($id_token){
 		}
 		$options = array("expires" => $payload['exp'], "httponly" => TRUE, "samesite" => "Strict");
 		setcookie("jwt", $id_token, $payload['exp']);
+		setcookie("payload", json_encode($payload), $payload['exp']);
 
 		setcookie("jwt_expiry", $payload['exp'], $payload['exp']);
 
 		return true;
-
 	}
 	// https://github.com/googleapis/google-api-php-client
 
 	/*
 	(
-	[iss] => accounts.google.com
+	issuer [iss] => accounts.google.com
 	[azp] => 240748276416-599kn4hneadk3e9ulick7lor4nnefjs4.apps.googleusercontent.com
-	[aud] => 240748276416-599kn4hneadk3e9ulick7lor4nnefjs4.apps.googleusercontent.com
+	app client id [aud] => 240748276416-599kn4hneadk3e9ulick7lor4nnefjs4.apps.googleusercontent.com
 	[sub] => 104137162787605911168
 	[email] => jobjorn@gmail.com
 	[email_verified] => 1
@@ -275,14 +272,28 @@ function verify_and_refresh_jwt($id_token){
 	//$domain = $payload['hd'];
 
 
-		/*
+	/*
 		1. klient trycker på logga in-knappen. vi får en id_token.
 		2. vi verifierar id_token gentemot google och får en payload tillbaka
 		3. vi kollar om id finns i vår databas, om inte, lägger vi in den
 		4. vi sätter en cookie med sluttid sluttiden
 		att göra: refresha cookien på något sätt så att man inte blir utloggad efter en timme.
 
-		*/
+The jti claim is a string that identifies a single security event, and is unique to the stream. You can use this identifier to track which security events you have received.
+
+här står det om refresh tokens:
+https://developers.google.com/identity/protocols/oauth2
 
 
+refreshing access tokens:
+https://developers.google.com/identity/protocols/oauth2/native-app#offline
+
+exempel på hela flödet:
+https://github.com/googleapis/google-api-php-client/blob/master/examples/idtoken.php
+		
+en någorlunda begriplig stack overflow-genomgång?
+https://stackoverflow.com/questions/25525471/google-oauth-2-0-refresh-token-for-web-application-with-public-access
+
+
+*/
 }
