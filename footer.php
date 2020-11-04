@@ -3,16 +3,12 @@
 
 			<footer>
 				<p>Jobjörn Folkesson - <a href="https://twitter.com/jobjorn">@jobjorn</a> - <a href="http://www.jobjorn.se/">jobjorn.se</a></p>
-				<pre>
-				<?php
+				<pre><?php
 
-				print_r($_COOKIE);
-				print_r(json_decode($_COOKIE['payload']));
-				?>
-			 	</pre>
-				<?php
-				echo date("Y-m-d H:i:s", $_COOKIE['jwt_expiry']);
-				?>
+						print_r(json_decode($_COOKIE['logged_in_user']));
+						var_dump($logged_in);
+						print_r($_COOKIE);
+						?></pre>
 			</footer>
 		</div> <!-- /container -->
 

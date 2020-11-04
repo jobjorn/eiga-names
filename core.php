@@ -56,8 +56,14 @@ try {
 	die();
 }
 
+
 // Cookie handling
-if (isset($_COOKIE['jwt'])) {
-	verify_and_refresh_jwt($_COOKIE['jwt']);
+if (isset($_COOKIE['logged_in_user'])) {
+	$logged_in_user = json_decode($_COOKIE['logged_in_user']);
+
+	$options = array("expires" => time() + 1800, "path" => "/", "httponly" => TRUE, "samesite" => "Strict");
+	setcookie("logged_in_user", json_encode($logged_in_user), $options);
+	$logged_in = true;
 } else {
+	$logged_in = false;
 }

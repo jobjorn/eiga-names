@@ -11,7 +11,7 @@ include("header.php");
 ?>
 <div class="container">
 
-	<div class="g-signin2" data-onsuccess="onSignIn"></div>
+
 
 </div>
 

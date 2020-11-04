@@ -238,62 +238,22 @@ function verify_and_refresh_jwt($id_token)
 			$statement->bindParam(":name", $name);
 			$statement->bindParam(":picture", $picture);
 			$statement->execute();
-		}
-		$options = array("expires" => $payload['exp'], "httponly" => TRUE, "samesite" => "Strict");
-		setcookie("jwt", $id_token, $payload['exp']);
-		setcookie("payload", json_encode($payload), $payload['exp']);
 
-		setcookie("jwt_expiry", $payload['exp'], $payload['exp']);
+			$logged_in = new stdClass();
+			$logged_in->id = $dbh->lastInsertId();
+			$logged_in->name = $name;
+			$logged_in->picture = $picture;
+		} elseif (count($result) == 1) {
+			$logged_in = new stdClass();
+			$logged_in->id = $result[0]->id;
+			$logged_in->name = $result[0]->name;
+			$logged_in->picture = $result[0]->picture;
+		} else {
+			die("Vad i helvete");
+		}
+		$options = array("expires" => time() + 1800, "path" => "/", "httponly" => TRUE, "samesite" => "Strict");
+		setcookie("logged_in_user", json_encode($logged_in), $options);
 
 		return true;
 	}
-	// https://github.com/googleapis/google-api-php-client
-
-	/*
-	(
-	issuer [iss] => accounts.google.com
-	[azp] => 240748276416-599kn4hneadk3e9ulick7lor4nnefjs4.apps.googleusercontent.com
-	app client id [aud] => 240748276416-599kn4hneadk3e9ulick7lor4nnefjs4.apps.googleusercontent.com
-	[sub] => 104137162787605911168
-	[email] => jobjorn@gmail.com
-	[email_verified] => 1
-	[at_hash] => 5qo10qeuHgcb7jMfrRabPA
-	[name] => Jobjörn Folkesson
-	[picture] => https://lh3.googleusercontent.com/a-/AOh14GjNMhz4x4TTpNt2Wuuv2kA06vkAYRpxoDGoSHgwew=s96-c
-	[given_name] => Jobjörn
-	[family_name] => Folkesson
-	[locale] => sv
-	[iat] => 1601489086
-	[exp] => 1601492686
-	[jti] => 16c4ea08f31cb2cdc1da8e3cc491084da0b3abaf
-
-	*/
-	// If request specified a G Suite domain:
-	//$domain = $payload['hd'];
-
-
-	/*
-		1. klient trycker på logga in-knappen. vi får en id_token.
-		2. vi verifierar id_token gentemot google och får en payload tillbaka
-		3. vi kollar om id finns i vår databas, om inte, lägger vi in den
-		4. vi sätter en cookie med sluttid sluttiden
-		att göra: refresha cookien på något sätt så att man inte blir utloggad efter en timme.
-
-The jti claim is a string that identifies a single security event, and is unique to the stream. You can use this identifier to track which security events you have received.
-
-här står det om refresh tokens:
-https://developers.google.com/identity/protocols/oauth2
-
-
-refreshing access tokens:
-https://developers.google.com/identity/protocols/oauth2/native-app#offline
-
-exempel på hela flödet:
-https://github.com/googleapis/google-api-php-client/blob/master/examples/idtoken.php
-		
-en någorlunda begriplig stack overflow-genomgång?
-https://stackoverflow.com/questions/25525471/google-oauth-2-0-refresh-token-for-web-application-with-public-access
-
-
-*/
 }
