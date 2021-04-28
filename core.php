@@ -14,19 +14,19 @@ $client->setDeveloperKey($google_api_key);
 
 // Module and submodule variables
 if (isset($_GET['module'])) {
-	$module = trim(str_replace("/", NULL, $_GET['module']));
+	$module = trim(str_replace("/", "", $_GET['module']));
 	if (isset($_GET['sub1'])) {
-		$sub1 = trim(str_replace("/", NULL, $_GET['sub1']));
+		$sub1 = trim(str_replace("/", "", $_GET['sub1']));
 		if (isset($_GET['sub2'])) {
-			$sub2 = trim(str_replace("/", NULL, $_GET['sub2']));
+			$sub2 = trim(str_replace("/", "", $_GET['sub2']));
 			if (isset($_GET['sub3'])) {
-				$sub3 = trim(str_replace("/", NULL, $_GET['sub3']));
+				$sub3 = trim(str_replace("/", "", $_GET['sub3']));
 				if (isset($_GET['sub4'])) {
-					$sub4 = trim(str_replace("/", NULL, $_GET['sub4']));
+					$sub4 = trim(str_replace("/", "", $_GET['sub4']));
 					if (isset($_GET['sub5'])) {
-						$sub5 = trim(str_replace("/", NULL, $_GET['sub5']));
+						$sub5 = trim(str_replace("/", "", $_GET['sub5']));
 						if (isset($_GET['sub6'])) {
-							$sub6 = trim(str_replace("/", NULL, $_GET['sub6']));
+							$sub6 = trim(str_replace("/", "", $_GET['sub6']));
 						}
 					}
 				}

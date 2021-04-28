@@ -1,4 +1,3 @@
-1) konfigurera om databasen så att den tar hänsyn till användar-ID
 2) konfigurera om resten av sidorna så att DE tar hänsyn till användar-ID
 3) bygga en import-sida
 4) ordna med en placeholder-poster (generera?)

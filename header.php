@@ -8,9 +8,9 @@
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 	<?php
 	if ($page_title) {
-		echo "<title>" . $page_title . " | Eiga</title>";
+		echo "<title>" . $page_title . " | Eiga för namn</title>";
 	} else {
-		echo "<title>Eiga</title>";
+		echo "<title>Eiga för namn</title>";
 	}
 	?>
 
@@ -70,12 +70,21 @@
 					<li <?php if (isset($active['home'])) {
 							echo $active['home'];
 						} ?>><a href="<?php echo $root_uri; ?>"><span class="glyphicon glyphicon-film"></span> Home</a></li>
-					<li <?php if (isset($active['list'])) {
-							echo $active['list'];
-						} ?>><a href="<?php echo $root_uri; ?>list/"><span class="glyphicon glyphicon-th-list"></span> List</a></li>
-					<li <?php if (isset($active['dotgraph'])) {
-							echo $active['dotgraph'];
-						} ?>><a href="<?php echo $root_uri; ?>dotgraph/"><span class="glyphicon glyphicon-option-vertical"></span> DOT digraph</a></li>
+					<?php
+					if ($logged_in) {
+					?>
+						<li <?php if (isset($active['list'])) {
+								echo $active['list'];
+							} ?>><a href="<?php echo $root_uri; ?>list/"><span class="glyphicon glyphicon-th-list"></span> List</a></li>
+						<li <?php if (isset($active['dotgraph'])) {
+								echo $active['dotgraph'];
+							} ?>><a href="<?php echo $root_uri; ?>dotgraph/"><span class="glyphicon glyphicon-option-vertical"></span> DOT digraph</a></li>
+						<li <?php if (isset($active['import'])) {
+								echo $active['import'];
+							} ?>><a href="<?php echo $root_uri; ?>import/"><span class="glyphicon glyphicon-import"></span> Import</a></li>
+					<?php
+					}
+					?>
 				</ul>
 
 				<ul class="nav navbar-nav pull-right">
