@@ -8,11 +8,13 @@
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 	<?php
 	if ($page_title) {
-		echo "<title>" . $page_title . " | Eiga för namn</title>";
+		echo "<title>" . $page_title . " | Namnsorteraren</title>";
 	} else {
-		echo "<title>Eiga för namn</title>";
+		echo "<title>Namnsorteraren</title>";
 	}
 	?>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -63,25 +65,25 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="<?php echo $root_uri; ?>">Eiga</a>
+				<a class="navbar-brand" href="<?php echo $root_uri; ?>">Namnsorteraren</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li <?php if (isset($active['home'])) {
 							echo $active['home'];
-						} ?>><a href="<?php echo $root_uri; ?>"><span class="glyphicon glyphicon-film"></span> Home</a></li>
+						} ?>><a href="<?php echo $root_uri; ?>"><span class="glyphicon glyphicon-tag"></span> Hem</a></li>
 					<?php
 					if ($logged_in) {
 					?>
 						<li <?php if (isset($active['list'])) {
 								echo $active['list'];
-							} ?>><a href="<?php echo $root_uri; ?>list/"><span class="glyphicon glyphicon-th-list"></span> List</a></li>
+							} ?>><a href="<?php echo $root_uri; ?>list/"><span class="glyphicon glyphicon-th-list"></span> Listan</a></li>
 						<li <?php if (isset($active['dotgraph'])) {
 								echo $active['dotgraph'];
 							} ?>><a href="<?php echo $root_uri; ?>dotgraph/"><span class="glyphicon glyphicon-option-vertical"></span> DOT digraph</a></li>
 						<li <?php if (isset($active['import'])) {
 								echo $active['import'];
-							} ?>><a href="<?php echo $root_uri; ?>import/"><span class="glyphicon glyphicon-import"></span> Import</a></li>
+							} ?>><a href="<?php echo $root_uri; ?>import/"><span class="glyphicon glyphicon-import"></span> Importera</a></li>
 					<?php
 					}
 					?>

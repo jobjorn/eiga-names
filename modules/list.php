@@ -11,7 +11,7 @@ include("header.php");
 ?>
 <div class="container">
 	<div class="col-md-12">
-		<h1>The list</h1>
+		<h1>Listan</h1>
 		<?php
 
 		$position = 0;

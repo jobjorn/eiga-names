@@ -60,14 +60,14 @@ include("header.php");
 			<?php
 
 
-			echo "<a href='" . $root_uri . "duel/" . $name1->id . "/" . $name2->id . "/'><h2>" . $name1->name . "</h2></a>";
+			echo "<a id='left' href='" . $root_uri . "duel/" . $name1->id . "/" . $name2->id . "/'><h2>" . $name1->name . "</h2></a>";
 
 			?>
 		</div>
 		<div class="col-md-6 duel">
 			<?php
 
-			echo "<a href='" . $root_uri . "duel/" . $name2->id . "/" . $name1->id . "/'><h2>" . $name2->name . "</h2></a>";
+			echo "<a id='right' href='" . $root_uri . "duel/" . $name2->id . "/" . $name1->id . "/'><h2>" . $name2->name . "</h2></a>";
 
 
 			?>
@@ -83,8 +83,22 @@ include("header.php");
 	}
 	?>
 </div>
+<script type="text/javascript">
+	$(document).keydown(function(e) {
+		switch (e.which) {
+			case 37: // left
+				var href = $('#left').attr('href');
+				window.location.href = href;
+				break;
 
-
+			case 39: // right
+				var href = $('#right').attr('href');
+				window.location.href = href;
+				break;
+		}
+		e.preventDefault();
+	});
+</script>
 
 <?php
 

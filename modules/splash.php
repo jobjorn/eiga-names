@@ -13,8 +13,8 @@ include("header.php");
 ?>
 <div class="container">
     <div class="col-md-12">
-        <h1>Eiga</h1>
-        <p>Eiga är en tjänst där du ställer filmer mot varandra för att lista ut vilken film som du egentligen tycker bäst om.</p>
+        <h1>Namnsorteraren</h1>
+        <p>Den här sidan är för Hedvig och Jobjörn.</p>
     </div>
 
 
