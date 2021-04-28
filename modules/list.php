@@ -24,25 +24,29 @@ include("header.php");
 		$result = $statement->fetchAll(PDO::FETCH_OBJ);
 		$i = 0;
 		$i2 = 0;
-		foreach ($result as $movie) {
+		$i3 = 0;
+		foreach ($result as $name) {
 			$i++;
 			if ($i == 1) {
 				echo "<table class='table-striped' id='list'>";
 			}
-			if ($movie->position != $position) {
+			if ($name->position != $position) {
 				$i2++;
 				if ($i > 1) {
 					echo "</td></tr>";
 				}
-				$position = $movie->position;
+				$position = $name->position;
 				echo "<tr>";
 				echo "<th><h2>" . $position . "</h2></th>";
 				echo "<td>";
+				$i3 = 0;
 			}
-			$movie_details = get_movie($movie->movie_id);
-			//echo "<pre>"; print_r($movie_details); echo "</pre>";
-			//show_movie($movie->id, "small");
-			echo "<a href='" . $movie_details->url . "'><img src='" . $movie_details->poster_small . "' title='" . htmlentities($movie_details->title, ENT_QUOTES) . " (" . $movie_details->year . ")' alt='" . htmlentities($movie_details->title, ENT_QUOTES) . " (" . $movie_details->year . ")' /></a>";
+			$i3++;
+			$name_details = get_name($name->name_id);
+			if ($i3 > 1) {
+				echo ", ";
+			}
+			echo "<a class='list-name' href='" . $name_details->url . "'>" . $name_details->name  . "</a>";
 		}
 		if ($i > 0) {
 			echo "</td></tr></table>";

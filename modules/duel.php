@@ -19,10 +19,10 @@ if ($logged_in && is_numeric($sub1) && is_numeric($sub2)) {
 		$i++;
 
 		if ($i == 1) {
-			$sql = "SELECT DISTINCT movie_id AS winner FROM eiga_grades WHERE user_id = :user_id1 AND movie_id NOT IN (SELECT loser FROM eiga_duels WHERE user_id = :user_id2) ORDER BY winner";
+			$sql = "SELECT DISTINCT name_id AS winner FROM eiga_grades WHERE user_id = :user_id1 AND name_id NOT IN (SELECT loser FROM eiga_duels WHERE user_id = :user_id2) ORDER BY winner";
 		} else {
 			$list = implode(", ", $winners);
-			$sql = "SELECT DISTINCT movie_id AS winner FROM eiga_grades WHERE user_id = :user_id1 AND movie_id NOT IN (SELECT loser FROM eiga_duels WHERE user_id = :user_id2 AND winner NOT IN (" . $list . ")) ORDER BY winner";
+			$sql = "SELECT DISTINCT name_id AS winner FROM eiga_grades WHERE user_id = :user_id1 AND name_id NOT IN (SELECT loser FROM eiga_duels WHERE user_id = :user_id2 AND winner NOT IN (" . $list . ")) ORDER BY winner";
 		}
 
 		$statement = $dbh->prepare($sql);
@@ -37,10 +37,10 @@ if ($logged_in && is_numeric($sub1) && is_numeric($sub2)) {
 				$i2++;
 				$winners[] = $winner->winner;
 
-				$update_sql = "UPDATE eiga_grades SET position = :position WHERE movie_id = :movie_id AND user_id = :user_id";
+				$update_sql = "UPDATE eiga_grades SET position = :position WHERE name_id = :name_id AND user_id = :user_id";
 				$update_statement = $dbh->prepare($update_sql);
 				$update_statement->bindParam(":position", $i);
-				$update_statement->bindParam(":movie_id", $winner->winner);
+				$update_statement->bindParam(":name_id", $winner->winner);
 				$update_statement->bindParam(":user_id", $logged_in_user->id);
 				$update_statement->execute();
 			}

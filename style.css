@@ -21,57 +21,6 @@ p.overview {
   padding-top: 1em;
 }
 
-.effect2 {
-  position: relative;
-  width: 500px;
-}
-.effect2:before,
-.effect2:after {
-  z-index: -1;
-  position: absolute;
-  content: "";
-  bottom: 15px;
-  left: 10px;
-  width: 50%;
-  top: 80%;
-  max-width: 300px;
-  background: #777;
-  -webkit-box-shadow: 0 15px 10px #777;
-  -moz-box-shadow: 0 15px 10px #777;
-  box-shadow: 0 15px 10px #777;
-  -webkit-transform: rotate(-3deg);
-  -moz-transform: rotate(-3deg);
-  -o-transform: rotate(-3deg);
-  -ms-transform: rotate(-3deg);
-  transform: rotate(-3deg);
-}
-.effect2:after {
-  -webkit-transform: rotate(3deg);
-  -moz-transform: rotate(3deg);
-  -o-transform: rotate(3deg);
-  -ms-transform: rotate(3deg);
-  transform: rotate(3deg);
-  right: 10px;
-  left: auto;
-}
-
-.link_letterboxd,
-.link_tmdb {
-  display: inline-flex;
-  align-items: center;
-  padding-right: 0.5em;
-}
-.link_letterboxd:before {
-  content: url("./images/letterboxd.png");
-  padding-right: 0.5em;
-  scale: 0.75;
-}
-.link_tmdb:before {
-  content: url("./images/tmdb.png");
-  padding-right: 0.5em;
-  scale: 0.75;
-}
-
 .barchart div {
   background-color: #bedcfa;
   padding: 1em 0;
@@ -92,4 +41,8 @@ p.overview {
 
 .barchart-alt div.alt {
   background-color: #befadc;
+}
+
+.duel {
+  text-align: center;
 }

@@ -5,67 +5,52 @@ require_once("core.php");
 require_once("connection.php");
 
 if ($logged_in) {
-    $imported_rows = str_getcsv($_POST['ratings'], "\n");
+    $imported_rows = str_getcsv($_POST['names'], "\n");
     foreach ($imported_rows as $row) {
-        $movie = str_getcsv($row);
+        $name = str_getcsv($row);
 
-        $date = $movie[0];
-        $title = $movie[1];
-        $year = $movie[2];
-        if (strlen($year) < 4) {
-            $year = 0;
-        }
-        $letterboxd_uri = $movie[3];
-        $grade = $movie[4];
+        $name = $name[0];
 
-        if ($date == "Date") {
-            continue;
-        } else {
-            $sql = "SELECT * FROM eiga_movies WHERE letterboxd_uri = :letterboxd_uri";
+
+
+
+        $sql = "SELECT * FROM eiga_names WHERE name = :name";
+        $statement = $dbh->prepare($sql);
+        $statement->bindParam(":name", $name);
+        $statement->execute();
+
+        $result = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if (count($result) == 0) {
+            $sql = "INSERT INTO eiga_names (name) VALUES (:name)";
             $statement = $dbh->prepare($sql);
-            $statement->bindParam(":letterboxd_uri", $letterboxd_uri);
+            $statement->bindParam(":name", $name);
             $statement->execute();
+            $name_id = $dbh->lastInsertId();
+        } elseif (count($result) == 1) {
+            $name_id = $result[0]->id;
+        } else {
+            die("Det är flera likadana namn i databasen");
+        }
 
-            $result = $statement->fetchAll(PDO::FETCH_OBJ);
+        $sql = "SELECT * FROM eiga_grades WHERE user_id = :user_id AND name_id = :name_id";
+        $statement = $dbh->prepare($sql);
+        $statement->bindParam(":user_id", $logged_in_user->id);
+        $statement->bindParam(":name_id", $name_id);
+        $statement->execute();
 
-            if (count($result) == 0) {
-                $sql = "INSERT INTO eiga_movies (letterboxd_uri, title, year) VALUES (:letterboxd_uri, :title, :year)";
-                $statement = $dbh->prepare($sql);
-                $statement->bindParam(":letterboxd_uri", $letterboxd_uri);
-                $statement->bindParam(":title", $title);
-                $statement->bindParam(":year", $year);
-                $statement->execute();
-                $movie_id = $dbh->lastInsertId();
-            } elseif (count($result) == 1) {
-                $movie_id = $result[0]->id;
-            } else {
-                die("Det är flera filmer med samma letterboxd_uri i databasen");
-            }
+        $result = $statement->fetchAll(PDO::FETCH_OBJ);
 
-            $sql = "SELECT * FROM eiga_grades WHERE user_id = :user_id AND movie_id = :movie_id";
+        if (count($result) == 0) {
+            $sql = "INSERT INTO eiga_grades (user_id, name_id) VALUES (:user_id, :name_id)";
             $statement = $dbh->prepare($sql);
             $statement->bindParam(":user_id", $logged_in_user->id);
-            $statement->bindParam(":movie_id", $movie_id);
+            $statement->bindParam(":name_id", $name_id);
             $statement->execute();
-
-            $result = $statement->fetchAll(PDO::FETCH_OBJ);
-
-            if (count($result) == 0) {
-                $sql = "INSERT INTO eiga_grades (user_id, movie_id, grade) VALUES (:user_id, :movie_id, :grade)";
-                $statement = $dbh->prepare($sql);
-                $statement->bindParam(":user_id", $logged_in_user->id);
-                $statement->bindParam(":movie_id", $movie_id);
-                $statement->bindParam(":grade", $grade);
-                $statement->execute();
-            } elseif (count($result) == 1) {
-                $sql = "UPDATE eiga_grades SET grade = :grade WHERE id = :id";
-                $statement = $dbh->prepare($sql);
-                $statement->bindParam(":grade", $grade);
-                $statement->bindParam(":id", $result[0]->id);
-                $statement->execute();
-            } else {
-                die("Det är flera betygsättningar av samma film i databasen");
-            }
+        } elseif (count($result) == 1) {
+            continue;
+        } else {
+            die("Samma namn är med flera gånger i eiga_grades i databasen");
         }
     }
 }
