@@ -28,7 +28,12 @@ include("header.php");
 		$statement->execute();
 		$result = $statement->fetchAll(PDO::FETCH_OBJ);
 
+		$i = 0;
 		foreach ($result as $duel) {
+			$i++;
+			if ($i > 1) {
+				echo ", ";
+			}
 			$name_details = get_name($duel->loser);
 			echo "<a class='list-name' href='" . $name_details->url . "'>" . $name_details->name . "</a>";
 		}
@@ -36,8 +41,6 @@ include("header.php");
 
 		<h3>Lost against</h3>
 		<?php
-		$i = 0;
-
 		$sql = "SELECT * FROM eiga_duels WHERE loser = :loser AND user_id = :user_id";
 		$statement = $dbh->prepare($sql);
 		$statement->bindParam(":loser", $id);
@@ -45,8 +48,13 @@ include("header.php");
 		$statement->execute();
 		$result = $statement->fetchAll(PDO::FETCH_OBJ);
 
+		$i = 0;
 		foreach ($result as $duel) {
-			$name_details = get_name($duel->loser);
+			$i++;
+			if ($i > 1) {
+				echo ", ";
+			}
+			$name_details = get_name($duel->winner);
 			echo "<a class='list-name' href='" . $name_details->url . "'>" . $name_details->name . "</a>";
 		}
 		?>
